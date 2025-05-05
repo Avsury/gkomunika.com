@@ -1,0 +1,2 @@
+# gkomunika.com
+theme shopify
