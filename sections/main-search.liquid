@@ -302,6 +302,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
           {% capture product_card %}
             <div class="product-card-container">
+              <a class="product-url-link" href="{{ product.url }}">
               <div class="product-card-country">
                 {% assign total_countries = product_countries.size %}
 
@@ -322,8 +323,9 @@ document.addEventListener("DOMContentLoaded", function() {
                     {% endif %}
                   </div>
                 {% endif %}
-                <h1><a class="product-url-link" href="{{ product.url }}">{{ product.title }}</a></h1>
+                <h1>{{ product.title }}</h1>
               </div>
+            </a>
 
               <div class="product-card-content">
                 <div class="product-card-content-flip-front">
