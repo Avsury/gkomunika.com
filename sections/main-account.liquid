@@ -233,6 +233,25 @@
   .ma-section-order-history-container {
     width: 100%;
   }
+  .ma-back-button {
+  display: none;
+  background-color: var(--color-primary);
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.ma-back-button.show {
+  display: block;
+}
+.mobile-hidden {
+  display: none !important;
+}
+
   @media (max-width: 768px) {
     .ma-container {
       padding: 20px 24px;
@@ -283,75 +302,63 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    const buttons = document.querySelectorAll('.ma-menu-wrapper[data-tab]');
-    const contents = document.querySelectorAll('.ma-section-order-history-container > div');
+    const tabButtons = document.querySelectorAll('.ma-menu-wrapper[data-tab]');
+    const tabContents = {
+      'order-history': document.getElementById('order-history'),
+      'edit-profile': document.getElementById('edit-profile'),
+      'membership': document.getElementById('membership'),
+    };
     const menuSection = document.querySelector('.ma-section-menu');
-    let activeTab = null;
+    const backToMenuBtn = document.getElementById('back-to-menu');
 
-    function resetMenu() {
-      buttons.forEach(btn => {
-        btn.querySelector('.menu-wrapper').classList.remove('active');
-      });
-
-      contents.forEach(content => {
-        content.style.display = 'none';
-      });
-
-      if (window.innerWidth <= 768) {
-        menuSection.classList.remove('hidden');
-      }
+    function hideAllTabs() {
+      Object.values(tabContents).forEach(section => section.classList.add('hidden'));
     }
 
-    function showTab(tab) {
-      const content = document.getElementById(tab);
-      if (!content) return;
-
-      resetMenu();
-      content.style.display = 'block';
-
-      const activeButton = document.querySelector(`.ma-menu-wrapper[data-tab="${tab}"] .menu-wrapper`);
-      if (activeButton) activeButton.classList.add('active');
-
-      if (window.innerWidth <= 768) {
-        menuSection.classList.add('hidden');
-      }
-
-      activeTab = tab;
+    function showMenu() {
+      menuSection.classList.remove('mobile-hidden');
+      backToMenuBtn.classList.remove('show');
+      tabButtons.forEach((btn) => btn.classList.remove('active'));
+      hideAllTabs();
     }
 
-    function applyResponsiveBehavior() {
-      if (window.innerWidth > 768) {
-        // Default aktif hanya di desktop
-        const defaultTab = activeTab || 'order-history';
-        showTab(defaultTab);
-        menuSection.classList.remove('hidden');
-      } else {
-        // Di mobile, jangan paksa tampil apapun dulu
-        resetMenu();
-        if (activeTab) {
-          const content = document.getElementById(activeTab);
-          if (content) content.style.display = 'block';
-
-          const activeButton = document.querySelector(`.ma-menu-wrapper[data-tab="${activeTab}"] .menu-wrapper`);
-          if (activeButton) activeButton.classList.add('active');
-
-          menuSection.classList.add('hidden');
-        }
-      }
+    // Initial load
+    if (window.innerWidth <= 768) {
+      hideAllTabs();
+      tabButtons.forEach((btn) => btn.classList.remove('active'));
+    } else {
+      hideAllTabs();
+      tabContents['order-history'].classList.remove('hidden');
+      document.querySelector('.ma-menu-wrapper[data-tab="order-history"]').classList.add('active');
     }
 
-    applyResponsiveBehavior();
-
-    buttons.forEach(button => {
+    tabButtons.forEach((button) => {
       button.addEventListener('click', () => {
-        const tab = button.getAttribute('data-tab');
-        showTab(tab);
+        const selectedTab = button.getAttribute('data-tab');
+
+        // Update active state
+        tabButtons.forEach((btn) => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        // Show selected tab
+        hideAllTabs();
+        tabContents[selectedTab].classList.remove('hidden');
+
+        // Mobile: hide menu, show back button
+        if (window.innerWidth <= 768) {
+          menuSection.classList.add('mobile-hidden');
+          backToMenuBtn.classList.add('show');
+        }
       });
     });
 
-    window.addEventListener('resize', applyResponsiveBehavior);
+    // Handle back button
+    backToMenuBtn.addEventListener('click', () => {
+      showMenu();
+    });
   });
 </script>
+
 
 
 <div class="ma-container">
@@ -362,7 +369,6 @@
   <section class="ma-section-order-history-container">
     <div id="order-history">{% render 'order-history' %}</div>
     <div id="edit-profile">{% render 'edit-profile' %}</div>
-    <div id="referral">{% render 'referral' %}</div>
     <div id="membership">{% render 'membership' %}</div>
   </section>
 </div>
