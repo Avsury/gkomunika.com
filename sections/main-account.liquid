@@ -358,6 +358,33 @@
     });
   });
 </script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const pageParam = urlParams.get('page');
+
+    // Hanya berlaku di mobile
+    const isMobile = window.innerWidth <= 768;
+
+    if (pageParam && isMobile) {
+      const menuSection = document.querySelector('.ma-section-menu');
+      const orderHistorySection = document.getElementById('order-history');
+      const backToMenuBtn = document.getElementById('back-to-menu');
+
+      if (menuSection) {
+        menuSection.classList.add('mobile-hidden'); // sesuai class CSS
+      }
+
+      if (orderHistorySection) {
+        orderHistorySection.classList.remove('hidden'); // pastikan order history tampil
+      }
+
+      if (backToMenuBtn) {
+        backToMenuBtn.classList.add('show'); // tampilkan tombol back
+      }
+    }
+  });
+</script>
 
 
 

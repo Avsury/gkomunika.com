@@ -62,7 +62,7 @@
           <div class="ma-order-history-wrapper btn">
             <div class="ma-order-total">
               <p>Total Payment</p>
-              <h2>{{ order.total_price | money }}</h2>
+              <h2>{{ order.total_price | money_with_currency }}</h2>
             </div>
             <div class="ma-order-button">
               {% comment %}
