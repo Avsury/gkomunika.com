@@ -59,6 +59,16 @@
         "name": "single_line_text_field",
         "category": "TEXT"
       }
+    },
+    {
+      "key": "article",
+      "namespace": "latest",
+      "name": "article",
+      "description": "",
+      "type": {
+        "name": "list.page_reference",
+        "category": "REFERENCE"
+      }
     }
   ],
   "product": [
