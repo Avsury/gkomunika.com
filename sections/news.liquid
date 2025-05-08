@@ -83,7 +83,7 @@
     justify-content: center;
   }
   .news__hero-wrapper {
-    background-color: var(--color-neutral);
+    /* background-color: var(--color-neutral); */
     padding: 20px 20%;
     height: 300px;
     display: flex;
@@ -98,7 +98,7 @@
   span {
     margin: 0;
     line-height: 1.5;
-    color: var(--color-primary);
+    color: var(--color-neutral);
   }
   .news__hero-button {
     margin-top: 50px;
@@ -174,6 +174,7 @@
             {% assign page = pages[page_id] %}
             {% if page %}
               <section class="news-content__card">
+                <a class="new-content__link" href="{{ page.url }}">
                 {% assign img_parts = page.content | split: '<img' %}
                 {% if img_parts.size > 1 %}
                   {% assign first_img_tag = img_parts[1] | split: '>' | first | prepend: '<img' | append: '>' %}
@@ -186,6 +187,7 @@
                 <div class="news-content__date">
                   {{ page.published_at | date: '%d %B %Y' }}
                 </div>
+              </a>
               </section>
             {% endif %}
           {% endfor %}
@@ -205,7 +207,7 @@
 
     <section class="news-content">
       <div class="news__hero-shoot">
-        <div class="news__hero-wrapper">
+        <div class="news__hero-wrapper" style="background-image: url({{ block.settings.hero-background | image_url }}); background-size: cover; background-position: center;">
           <h2>{{ block.settings['hero-title'] }}</h2>
           <span>{{ block.settings['hero-description'] }}</span>
           {% if block.settings['show-button'] %}
@@ -423,7 +425,12 @@
           "id": "show-button",
           "label": "Tampilkan tombol Readmore",
           "default": true
-        }
+        },
+        {
+          "type": "image_picker",
+          "id": "hero-background",
+          "label": "Hero Background Image"
+        }        
       ]
     }
   ],
