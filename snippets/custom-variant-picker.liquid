@@ -193,8 +193,8 @@
     left: 0;
     bottom: 0;
     width: 100%;
-    padding: 20px 24px;
-    background-color: var(--color-neutral);
+
+    
     z-index: 999;
   }
   .variant-picker-btn__mobile-wrapper {
@@ -282,6 +282,8 @@
 
 <!-- Versi mobile -->
 <div class="variant-picker-btn__mobile">
+  <div id="bucks-mobile" style="margin-left: 11px;"></div>
+  <div style="padding: 20px 24px; background-color: var(--color-neutral);">
   <h2>{{ product.title }}</h2>
   <span id="selected-variant-display">Selected Variant</span>
 
@@ -291,6 +293,7 @@
   <div class="variant-picker-btn__mobile-wrapper">
     <button class="cart" type="button" id="add-to-cart-mobile"><p>Add to Cart</p></button>
     <button class="buy" type="button" id="buy-now-button-mobile"><p>Buy Now</p></button>
+  </div>
   </div>
 </div>
 
