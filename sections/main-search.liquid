@@ -9,11 +9,13 @@
 
 {% comment %} # STYLES SECTION {% endcomment %}
 {% style %}
+  .main-search {
+    max-width: 1920px;
+    margin: 0 auto;
+  }
   .main-search-container {
     background-color: var(--color-background);
     padding: 20px 10% 90px;
-    max-width: 1920px;
-    margin: 0 auto;
   }
 
   .main-search-collection {
@@ -51,7 +53,7 @@
     justify-content: flex-start;
     width: 100%;
     margin-bottom: 20px;
-    min-height: 0px;
+    min-height: 53px;
   }
 
   .product-card-country h1 {
@@ -211,7 +213,7 @@
     padding: 10px;
     cursor: pointer;
     border-radius: 10px;
-    border: 1px solid var(--color-secondary);
+    border: 1px solid var(--color-primary);
     background: none;
   }
 
@@ -226,6 +228,15 @@
     font-size: 12px;
     font-weight: bold;
     color: var(--color-neutral);
+  }
+  .main-search__product span {
+    background-color: var(--color-primary);
+    border-radius: 5px;
+    padding: 5px;
+    color: var(--color-neutral);
+    font-size: 12px;
+    margin: 0;
+    font-weight: bold;
   }
 
   @media (max-width: 1440px) {
@@ -246,30 +257,32 @@
 
 {% comment %} # JAVASCRIPT SECTION {% endcomment %}
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  document.querySelectorAll(".flipped-trigger").forEach(function(button) {
-    button.addEventListener("click", function(event) {
-      event.stopPropagation();
-      let card = this.closest(".product-card-container");
-      card.classList.toggle("flipped");
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.flipped-trigger').forEach(function (button) {
+      button.addEventListener('click', function (event) {
+        event.stopPropagation();
+        let card = this.closest('.product-card-container');
+        card.classList.toggle('flipped');
+      });
     });
-  });
 
-  document.addEventListener("click", function(event) {
-    document.querySelectorAll(".product-card-container.flipped").forEach(function(card) {
-      if (!card.contains(event.target) || event.target.closest(".product-card-content-flip-back")) {
-        card.classList.remove("flipped");
-      }
+    document.addEventListener('click', function (event) {
+      document.querySelectorAll('.product-card-container.flipped').forEach(function (card) {
+        if (!card.contains(event.target) || event.target.closest('.product-card-content-flip-back')) {
+          card.classList.remove('flipped');
+        }
+      });
     });
   });
-});
 </script>
 
 {% comment %} # TEMPLATE SECTION {% endcomment %}
-<main-search>
+<div class="main-search">
   <div class="main-search-container">
     {% assign search_term = search.terms | downcase | strip %}
-    {% assign collections_to_check = 'single_country_collection,multi_country_collection,global_country_collection' | split: ',' %}
+    {% assign collections_to_check = 'single_country_collection,multi_country_collection,global_country_collection'
+      | split: ','
+    %}
     {% assign found_any_product = false %}
     {% assign single_product_url = '' %}
     {% assign product_count = 0 %}
@@ -323,7 +336,21 @@ document.addEventListener("DOMContentLoaded", function() {
                     {% endif %}
                   </div>
                 {% endif %}
+                <div class="main-search__product">
+                  {% assign handles = "esim,simcard" | split: "," %}
+{% for handle in handles %}
+  {% assign sim_card = shop.metaobjects['shopify--sim-card-type'][handle] %}
+  {% if sim_card %}
+    
+      {% if sim_card.label %}
+        <span>SIM Type: {{ sim_card.label }}</span>
+      {% endif %}
+  {% endif %}
+{% endfor %}
+
+                  
                 <h1>{{ product.title }}</h1>
+                </div>
               </div>
             </a>
 
@@ -411,11 +438,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     {% if product_count == 1 %}
       <script>
-        window.location.href = "{{ single_product_url }}";
+        window.location.href = '{{ single_product_url }}';
       </script>
     {% endif %}
   </div>
-</main-search>
+</div>
 
 {% comment %} # SCHEMA SECTION {% endcomment %}
 {% schema %}
