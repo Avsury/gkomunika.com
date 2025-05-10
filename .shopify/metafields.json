@@ -226,7 +226,7 @@
       "key": "additonal_information",
       "namespace": "details",
       "name": "Additonal Information",
-      "description": "",
+      "description": "Email can only be registered once and cannot be reused",
       "type": {
         "name": "multi_line_text_field",
         "category": "TEXT"

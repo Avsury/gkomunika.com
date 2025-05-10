@@ -1,136 +1,223 @@
-<link rel="stylesheet" href="{{ 'main-account.css' | asset_url }}">
+{% comment %} od = order details {% endcomment %}
 
-<div class="ma-container">
-  <section class="ma-section-order-history-container">
-    <div id="order-history">
-      <section class="ma-section-order-history">
-        {% for order in customer.orders %}
-          <div class="ma-section-order-history-wrapper">
-            <div id="ma-section-order-history-wrapper">
-              <div class="ma-order-history-wrapper">
-                <div class="ma-order-history-invoice">
-                  <img src="{{ 'border-inv.svg' | asset_url }}">
-                  <h2>{{ order.created_at | date: '%d/%m/%Y %H:%M' }}</h2>
+{% style %}
+.od__container { max-width: 1920px; margin: 0 auto; }
+.od__wrapper { padding: 20px 10%; display: flex; flex-direction: column; gap: 30px; }
+.od__order-block { padding: 15px; background: var(--color-neutral); border-radius: 20px; }
+.od__order-title, .od__order-description { margin: 0; color: var(--color-primary); font-weight: bold; }
+
+.od__redeem { display: flex; flex-direction: column; gap: 10px; }
+.od__details-card { display: flex; flex-direction: column; border: 1px solid #D9D9D9; border-radius: 10px; padding: 10px; gap: 10px; align-items: center; margin-top: 15px; }
+.od__redeem-wrapper { display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-radius: 5px; width: 100%; }
+.od__redeem-index { display: flex; align-items: center; gap: 10px; width: 100%; }
+.od__redeem-index span {
+  background: var(--color-secondary);
+  border-radius: 15px;
+  width: 80px;
+  min-width: 80px;
+  text-align: center;
+  color: var(--color-neutral);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+}
+
+.od__redeem-product-name h2 {
+  margin: 0;
+  font-size: var(--font-large);
+  font-weight: bold;
+  color: var(--color-primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.oh-details__quantity p { margin: 0;}
+
+.od__redeem-info { display: none; width: 100%; gap: 10px; overflow: hidden; transition: max-height 0.8s ease-out, opacity 0.5s ease-out, transform 0.5s ease-out; }
+.od__redeem-info-wrapper { display: flex; gap: 10px; }
+.od__redeem-data-wrapper { width: 100%; }
+.od__redeem-data { display: flex; justify-content: space-between; }
+.od__redeem-data p { margin: 0; font-size: var(--font-small); color: var(--color-primary); }
+.od__redeem-data h2 {
+  margin: 0;
+  font-size: var(--font-extra-large);
+  font-weight: bold;
+  color: var(--color-primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.copy-button { gap: 5px; background: transparent; display: flex; border: none; align-items: center; color: var(--color-primary); }
+.copy-button:hover p { color: var(--color-secondary); }
+.copy-button.copied p { color: var(--color-primary); }
+.copy-button-icon { color: var(--color-primary); }
+
+
+@media (max-width: 425px) {
+  .od__wrapper { padding: 20px 24px; }
+  .od__redeem-info-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+}
+{% endstyle %}
+
+<div class="od__container">
+  <section class="od__wrapper">
+    {% for order in customer.orders %}
+      <div class="od__order-block" data-order-id="{{ order.id }}">
+        {% render 'order-history__details', order: order %}
+      </div>
+
+      <div class="od__order-block" data-order-id="{{ order.id }}">
+        <h2 class="od__order-title">eSIM Details</h2>
+        <h3 class="od__order-description">QR SENT TO: <span style="color: var(--color-secondary);">{{ order.email }}</span></h3>
+
+        {% assign expanded_items = "" %}
+        {% for item in order.line_items %}
+          {% for i in (1..item.quantity) %}
+            {% assign expanded_items = expanded_items | append: item.sku | append: "||" %}
+          {% endfor %}
+        {% endfor %}
+        {% assign item_list = expanded_items | split: "||" %}
+
+        {% for sku in item_list %}
+          {% assign matched_code = null %}
+          {% for data in order.metafields.sim_card.details.value.activation_code %}
+            {% if data.sku == sku %}
+              {% assign matched_code = data %}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+
+          {% assign matched_item = null %}
+          {% for item in order.line_items %}
+            {% if item.sku == sku %}
+              {% assign matched_item = item %}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+
+          <section class="od__redeem">
+            <div class="od__details-card">
+              <div class="od__redeem-wrapper" onclick="toggleDetails(this)">
+                <div class="od__redeem-index">
+                  <span>QR #{{ forloop.index }}</span>
+                  <div class="od__redeem-product-name">
+                    {% assign product_name_only = matched_item.title | split: ' - ' | first %}
+                    {% assign product_name = matched_item.product.title %}
+                    {% assign variant_name = matched_item.title | remove: product_name | strip %}
+                    {% assign variant_parts = variant_name | split: ' / ' %}
+                    {% assign formatted_variant = variant_parts | join: ', ' | strip | remove_first: '-' | strip %}
+                    <h2>{{ product_name_only }}</h2>
+                    <h2>{{ formatted_variant }}</h2>
+                  </div>
                 </div>
-                <h2>#{{ order.name }}</h2>
+                <img class="od__redeem-icon" src="{{ 'icon-arrow-back.svg' | asset_url }}" alt="Icon">
               </div>
 
-              {% for line_item in order.line_items %}
-                <div class="ma-order-history-wrapper">
-                  <div class="ma-product-wrapper" data-order-id="{{ order.id }}">
-                    {% assign countries_array = line_item.product.metafields.coverage.country.value %}
-                    {% assign total_countries = countries_array.size %}
-                    {% if total_countries == 1 %}
-                      {% assign country_trimmed = countries_array.first | strip | downcase %}
-                      {% assign country_filename = country_trimmed | replace: ' ', '-' | capitalize | append: '.svg' %}
-                      <img
-                        class="ma-product-icon-single-flag"
-                        src="{{ country_filename | file_url }}"
-                        alt="{{ country_trimmed }}"
-                        width="40"
-                        height="40"
-                      >
-                    {% elsif total_countries > 1 %}
-                      <div class="ma-product-multi-flag">
-                        {% for country in countries_array limit: 3 %}
-                          {% assign country_trimmed = country | strip | downcase %}
-                          {% assign country_filename = country_trimmed
-                            | replace: ' ', '-'
-                            | capitalize
-                            | append: '.svg'
-                          %}
-                          <img
-                            class="ma-product-icon-multi-flag"
-                            src="{{ country_filename | file_url }}"
-                            alt="{{ country_trimmed }}"
-                            width="25"
-                            height="25"
-                          >
-                        {% endfor %}
-                        {% if total_countries > 3 %}
-                          <div class="ma-product-flag-count">
-                            <span>+{{ total_countries | minus: 3 }}</span>
-                          </div>
-                        {% endif %}
+              {% if matched_code %}
+                <section class="od__redeem-info">
+                  <div class="od__redeem-info-wrapper">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ matched_code.qrcode | url_encode }}" width="75" height="75" style="cursor:pointer;">
+                    <div class="od__redeem-data-wrapper">
+                      {% assign fields = "iccid,smdp,activationcode,qrcode" | split: "," %}
+                      {% for field in fields %}
+                      <div class="od__redeem-data">
+                        <div>
+                          <p>{{ field | upcase }}:</p>
+                          <h2 id="{{ field }}-{{ forloop.parentloop.index }}">{{ matched_code[field] }}</h2>
+                        </div>
+                        <button class="copy-button" onclick="copyText('{{ field }}-{{ forloop.parentloop.index }}')">
+                          <img class="copy-button-icon" src="{{ 'icon-copy.svg' | asset_url }}" alt="Copy Icon">
+                          <p>Copy</p>
+                        </button>
                       </div>
-                    {% endif %}
-
-                    <div class="ma-order-product-name">
-                      {% assign product_name_only = line_item.title | split: ' - ' | first %}
-                      {% assign product_name = line_item.product.title %}
-                      {% assign variant_name = line_item.title | remove: product_name | strip %}
-                      {%- assign variant_parts = variant_name | split: ' / ' -%}
-                      {% assign formatted_variant = variant_parts | join: ', ' %}
-                      {% assign formatted_variant = formatted_variant | strip | remove_first: '-' | strip %}
-                      <h2>{{ product_name_only }}</h2>
-                      <h2>{{ formatted_variant }}</h2>
+                      {% endfor %}
                     </div>
                   </div>
-                  <div class="ma-order-quantity">
-                    {% for item in order.line_items %}
-                      <p>x {{ item.quantity }}</p>
-                      <p>{{ item.price | money_with_currency }}</p>
-                    {% endfor %}
-                  </div>
+                </section>
+              {% else %}
+                <div class="od__redeem-info">
+                  <h2 style="color: var(--color-primary); font-weight: normal;">For complete details, kindly check your email.</h2>
                 </div>
-              {% endfor %}
+              {% endif %}
             </div>
-            <div class="ma-section-order-history-wrapper order-details-container">
-              {% render 'order-details-page', order: order %}
-            </div>
-          </div>
+          </section>
         {% endfor %}
-      </section>
-    </div>
+      </div>
+
+      <div class="od__order-block" data-order-id="{{ order.id }}">
+        {% render 'order-summary', order: order %}
+      </div>
+    {% endfor %}
   </section>
 </div>
 
-<!-- script order-history copy yang befungsi untuk menampil order nya berdasarkan id yang diterima -->
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    // Ambil order_id dari URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const orderId = urlParams.get('order_id');
+document.addEventListener("DOMContentLoaded", function () {
+  const orderIdParam = new URLSearchParams(window.location.search).get('order_id');
+  if (orderIdParam) {
+    document.querySelectorAll('.od__order-block').forEach(block => {
+      if (block.getAttribute('data-order-id') !== orderIdParam) block.remove();
+    });
+  }
 
-    if (orderId) {
-      // Sembunyikan semua order
-      document.querySelectorAll('.ma-section-order-history-wrapper').forEach(function (orderWrapper) {
-        let orderButton = orderWrapper.querySelector('.ma-product-wrapper');
+  const first = document.querySelector('.od__redeem-wrapper');
+  if (first) {
+    const details = first.nextElementSibling;
+    const icon = first.querySelector('.od__redeem-icon');
+    details.style.display = "block";
+    if (icon) icon.style.transform = "rotate(90deg)";
+  }
+});
 
-        if (orderButton) {
-          let orderDataId = orderButton.getAttribute('data-order-id');
-
-          // Tampilkan hanya order yang sesuai dengan order_id dari URL
-          if (orderDataId === orderId) {
-            orderWrapper.style.display = 'flex';
-          } else {
-            orderWrapper.remove();
-          }
-        }
-      });
+function toggleDetails(el) {
+  document.querySelectorAll('.od__redeem-info').forEach(d => {
+    if (d !== el.nextElementSibling) {
+      d.style.display = "none";
+      let ic = d.previousElementSibling.querySelector('.od__redeem-icon');
+      if (ic) ic.style.transform = "rotate(0deg)";
     }
   });
+
+  const details = el.nextElementSibling;
+  const icon = el.querySelector('.od__redeem-icon');
+  const visible = details.style.display === "block";
+  details.style.display = visible ? "none" : "block";
+  if (icon) icon.style.transform = visible ? "rotate(0deg)" : "rotate(90deg)";
+}
+
+function copyText(id) {
+  const text = document.getElementById(id).innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    document.querySelectorAll(".copy-button").forEach(btn => {
+      btn.classList.remove("copied");
+      btn.querySelector("p").innerText = "Copy";
+      btn.querySelector("p").style.color = "";
+    });
+    const btn = document.querySelector(`[onclick="copyText('${id}')"]`);
+    if (btn) {
+      btn.querySelector("p").innerText = "Copied";
+      btn.querySelector("p").style.color = "var(--color-secondary)";
+      btn.classList.add("copied");
+    }
+  });
+}
 </script>
 
 {% schema %}
 {
   "name": "Main Order",
   "settings": [],
-  "blocks": [
-    {
-      "type": "@app"
-    },
-    {
-      "type": "order",
-      "name": "order history",
-      "limit": 1
-    },
-    {
-      "type": "summary",
-      "name": "order Summary",
-      "limit": 1
-    }
-  ],
+  "blocks": [],
   "presets": [
     {
       "name": "Main Orde"
