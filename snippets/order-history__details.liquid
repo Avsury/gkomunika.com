@@ -1,37 +1,146 @@
 {% style %}
+  .oh-details__container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
 .oh-details__card {
   display: flex;
   justify-content: space-between;
   width: 100%;
-}
-.oh-details__card h2 {
-  margin: 0;
-  line-height: 1;
-  display: flex;
+  gap: 10px;
   align-items: center;
-  font-size: var(--font-supper-large);
+  color: var(--color-primary);
 }
+
 .oh-details__date {
   display: flex;
-  width: auto;
   gap: 5px;
+  color: var(--color-primary);
 }
+
+.oh-details__date-title,
+.oh-details__date-id {
+  font-size: var(--font-large);
+  color: var(--color-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.oh-details__card-title {
+  font-size: var(--font-supper-large);
+  color: var(--color-primary);
+  font-weight: bold;
+  margin: 0;
+}
+
+
+.oh-details__card-variant {
+  margin: 0;
+}
+
+.oh-details__images {
+  display: flex;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+}
+
+.oh-details__single-image {
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+}
+.oh-details__multi-image {
+  border-radius: 5px;
+  border: 1px solid var(--color-border);
+}
+
+.oh-details__multi-images {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+}
+
+.oh-details__count {
+  border-radius: 5px;
+  border: 1px solid var(--color-border);
+  width: 23px;
+  height: 23px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.oh-details__count span {
+  font-size: 12px;
+  margin: 0;
+  line-height: 1.2;
+  color: var(--color-primary);
+}
+
 .oh-details__card-wrapper {
   display: flex;
   justify-content: space-between;
   width: 100%;
-  background-color: tomato;
+  color: var(--color-primary);
+}
+
+.oh-details__card-variant {
+  font-size: var(--font-large);
+  color: var(--color-primary);
+}
+
+.oh-details__quantity {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: right;
+  color: var(--color-primary);
+}
+
+.oh-details__summary {
+  display: flex;
+  justify-content: space-between;
+  color: var(--color-primary);
+  align-items: center;
+}
+
+.oh-details__total-title {
+  font-size: var(--font-large);
+  margin: 0;
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
+.oh-details__button {
+  background-color: var(--color-primary);
+  color: var(--color-neutral);
+  font-size: var(--font-large);
+  padding: 0 15px;
+  height: 40px;
+  border-radius: 15px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.oh-details__button:active {
+  transform: translateY(5px);
+  box-shadow: var(--box-shadow);
 }
 {% endstyle %}
+
 
 
 <div class="oh-details__container">
   <section class="oh-details__card">
     <div class="oh-details__date">
       {{- 'border-inv.svg' | inline_asset_content -}}
-      <h2>{{ order.created_at | date: '%d/%m/%Y %H:%M' }}</h2>
+      <h2 class="oh-details__date-title">{{ order.created_at | date: '%d/%m/%Y %H:%M' }}</h2>
     </div>
-    <h2>#{{ order.name }}</h2>
+    <h2 class="oh-details__date-id">#{{ order.name }}</h2>
   </section>
 
   {% for line_item in order.line_items %}
@@ -48,8 +157,8 @@
               class="oh-details__single-image"
               src="{{ country_filename | file_url }}"
               alt="{{ country_trimmed }}"
-              width="40"
-              height="40"
+              width="50"
+              height="50"
             >
           {% elsif total_countries > 1 %}
             <div class="oh-details__multi-images">
@@ -60,8 +169,8 @@
                   class="oh-details__multi-image"
                   src="{{ country_filename | file_url }}"
                   alt="{{ country_trimmed }}"
-                  width="20"
-                  height="20"
+                  width="25"
+                  height="25"
                 >
               {% endfor %}
               {% if total_countries > 3 %}
@@ -74,18 +183,31 @@
         </div>
 
         <div class="oh-details__card-wrapper">
-          {% assign product_name_only = line_item.title | split: ' - ' | first %}
-          {% assign variant_raw = line_item.title | split: ' - ' | last %}
-          {% assign formatted_variant = variant_raw | split: ' / ' | join: ', ' %}
           <div class="oh-details__card-content">
-          <h2 class="oh-details__card-title">{{ product_name_only }}</h2>
-          <h2 class="oh-details__card-variant">{{ formatted_variant }}</h2>
+            {% if line_item.title contains ' - ' %}
+              {% assign title_parts = line_item.title | split: ' - ' %}
+              {% assign product_name_only = title_parts[0] %}
+              {% assign variant_section = title_parts[1] %}
+              {% assign variant_parts = variant_section | split: ' / ' %}
+              {% assign formatted_variant = variant_parts | join: ', ' %}
+            {% else %}
+              {% assign product_name_only = line_item.title %}
+              {% assign formatted_variant = '' %}
+            {% endif %}
+        
+            <h2 class="oh-details__card-title">{{ product_name_only }}</h2>
+        
+            {% if formatted_variant != '' %}
+              <h2 class="oh-details__card-variant">{{ formatted_variant }}</h2>
+            {% endif %}
           </div>
+        
           <div class="oh-details__quantity">
             <p>x {{ line_item.quantity }}</p>
             <p>{{ line_item.price | money_with_currency }}</p>
           </div>
         </div>
+        
       </section>
     </div>
   {% endfor %}
@@ -94,7 +216,7 @@
     <div class="oh-details__summary">
       <section class="oh-details__total-payment">
         <p>Total Payment</p>
-        <h2>{{ order.total_price | money_with_currency }}</h2>
+        <h2 class="oh-details__total-title">{{ order.total_price | money_with_currency }}</h2>
       </section>
       <button class="oh-details__button" data-order-id="{{ order.id }}">Details</button>
     </div>
