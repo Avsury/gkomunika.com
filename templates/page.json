@@ -17,14 +17,14 @@
         "padding_bottom": 28
       }
     },
-    "page_order_details_NipiV3": {
-      "type": "page-order-details",
-      "name": "Section Order Details",
+    "main_order_details_99UhyF": {
+      "type": "main-order-details",
+      "name": "Main Orde",
       "settings": {}
     }
   },
   "order": [
     "main",
-    "page_order_details_NipiV3"
+    "main_order_details_99UhyF"
   ]
 }
