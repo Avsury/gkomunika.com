@@ -1,148 +1,72 @@
 {% comment %} od = order details {% endcomment %}
 
 {% style %}
-  .od__container {
-    max-width: 1920px;
-    margin: 0 auto;
-  }
-  .od__wrapper {
-    padding: 20px 10%;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-  }
-  .od__order-block {
-    padding: 15px;
-    background: var(--color-neutral);
-    border-radius: 20px;
-  }
-  .od__order-title,
-  .od__order-description {
-    margin: 0;
-    color: var(--color-primary);
-    font-weight: bold;
-  }
+.od__container { max-width: 1920px; margin: 0 auto; }
+.od__wrapper { padding: 20px 10%; display: flex; flex-direction: column; gap: 30px; }
+.od__order-block { padding: 15px; background: var(--color-neutral); border-radius: 20px; }
+.od__order-title, .od__order-description { margin: 0; color: var(--color-primary); font-weight: bold; }
 
-  .od__redeem {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .od__details-card {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #d9d9d9;
-    border-radius: 10px;
-    padding: 10px;
-    gap: 10px;
-    align-items: center;
-    margin-top: 15px;
-  }
-  .od__redeem-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    border-radius: 5px;
-    width: 100%;
-  }
-  .od__redeem-index {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-  }
-  .od__redeem-index span {
-    background: var(--color-secondary);
-    border-radius: 15px;
-    width: 80px;
-    min-width: 80px;
-    text-align: center;
-    color: var(--color-neutral);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex-shrink: 0;
-  }
+.od__redeem { display: flex; flex-direction: column; gap: 10px; }
+.od__details-card { display: flex; flex-direction: column; border: 1px solid #D9D9D9; border-radius: 10px; padding: 10px; gap: 10px; align-items: center; margin-top: 15px; }
+.od__redeem-wrapper { display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-radius: 5px; width: 100%; }
+.od__redeem-index { display: flex; align-items: center; gap: 10px; width: 100%; }
+.od__redeem-index span {
+  background: var(--color-secondary);
+  border-radius: 15px;
+  width: 80px;
+  min-width: 80px;
+  text-align: center;
+  color: var(--color-neutral);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+}
 
-  .od__redeem-product-name h2 {
-    margin: 0;
-    font-size: var(--font-large);
-    font-weight: bold;
-    color: var(--color-primary);
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+.od__redeem-product-name h2 {
+  margin: 0;
+  font-size: var(--font-large);
+  font-weight: bold;
+  color: var(--color-primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-  .oh-details__quantity p {
-    margin: 0;
-  }
+.oh-details__quantity p { margin: 0;}
 
-  .od__redeem-info {
-    display: none;
-    width: 100%;
-    gap: 10px;
-    overflow: hidden;
-    transition: max-height 0.8s ease-out, opacity 0.5s ease-out, transform 0.5s ease-out;
-  }
+.od__redeem-info { display: none; width: 100%; gap: 10px; overflow: hidden; transition: max-height 0.8s ease-out, opacity 0.5s ease-out, transform 0.5s ease-out; }
+.od__redeem-info-wrapper { display: flex; gap: 10px; }
+.od__redeem-data-wrapper { width: 100%; }
+.od__redeem-data { display: flex; justify-content: space-between; }
+.od__redeem-data p { margin: 0; font-size: var(--font-small); color: var(--color-primary); }
+.od__redeem-data h2 {
+  margin: 0;
+  font-size: var(--font-extra-large);
+  font-weight: bold;
+  color: var(--color-primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.copy-button { gap: 5px; background: transparent; display: flex; border: none; align-items: center; color: var(--color-primary); }
+.copy-button:hover p { color: var(--color-secondary); }
+.copy-button.copied p { color: var(--color-primary); }
+.copy-button-icon { color: var(--color-primary); }
+
+
+@media (max-width: 425px) {
+  .od__wrapper { padding: 20px 24px; }
   .od__redeem-info-wrapper {
     display: flex;
-    gap: 10px;
+    flex-direction: column;
   }
-  .od__redeem-data-wrapper {
-    width: 100%;
-  }
-  .od__redeem-data {
-    display: flex;
-    justify-content: space-between;
-  }
-  .od__redeem-data p {
-    margin: 0;
-    font-size: var(--font-small);
-    color: var(--color-primary);
-  }
-  .od__redeem-data h2 {
-    margin: 0;
-    font-size: var(--font-extra-large);
-    font-weight: bold;
-    color: var(--color-primary);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .copy-button {
-    gap: 5px;
-    background: transparent;
-    display: flex;
-    border: none;
-    align-items: center;
-    color: var(--color-primary);
-  }
-  .copy-button:hover p {
-    color: var(--color-secondary);
-  }
-  .copy-button.copied p {
-    color: var(--color-primary);
-  }
-  .copy-button-icon {
-    color: var(--color-primary);
-  }
-
-  @media (max-width: 425px) {
-    .od__wrapper {
-      padding: 20px 24px;
-    }
-    .od__redeem-info-wrapper {
-      display: flex;
-      flex-direction: column;
-    }
-  }
+}
 {% endstyle %}
 
 <div class="od__container">
@@ -154,70 +78,58 @@
 
       <div class="od__order-block" data-order-id="{{ order.id }}">
         <h2 class="od__order-title">eSIM Details</h2>
-        <h3 class="od__order-description">
-          QR SENT TO: <span style="color: var(--color-secondary);">{{ order.email }}</span>
-        </h3>
+        <h3 class="od__order-description">QR SENT TO: <span style="color: var(--color-secondary);">{{ order.email }}</span></h3>
 
-        {% assign activation_codes = order.metafields.sim_card.details.value.activation_code %}
+        {% for data in order.metafields.sim_card.details.value.activation_code %}
+          {% assign matched_item = null %}
+          {% for item in order.line_items %}
+            {% if item.sku == data.sku %}
+              {% assign matched_item = item %}
+              {% break %}
+            {% endif %}
+          {% endfor %}
 
-        {% for item in order.line_items %}
-          {% assign matching_codes = activation_codes | where: 'sku', item.sku %}
-
-          {% if matching_codes.size > 0 %}
-            {% for code in matching_codes %}
-              <section class="od__redeem">
-                <div class="od__details-card">
-                  <div class="od__redeem-wrapper" onclick="toggleDetails(this)">
-                    <div class="od__redeem-index">
-                      <span>QR #{{ forloop.index }}</span>
-                      <div class="od__redeem-product-name">
-                        {% assign product_name_only = item.title | split: ' - ' | first %}
-                        {% assign product_name = item.product.title %}
-                        {% assign variant_name = item.title | remove: product_name | strip %}
-                        {% assign variant_parts = variant_name | split: ' / ' %}
-                        {% assign formatted_variant = variant_parts | join: ', ' | strip | remove_first: '-' | strip %}
-                        <h2>{{ product_name_only }}</h2>
-                        <h2>{{ formatted_variant }}</h2>
-                      </div>
-                    </div>
-                    <img class="od__redeem-icon" src="{{ 'icon-arrow-back.svg' | asset_url }}" alt="Icon">
+          {% if matched_item %}
+          <section class="od__redeem">
+            <div class="od__details-card">
+              <div class="od__redeem-wrapper" onclick="toggleDetails(this)">
+                <div class="od__redeem-index">
+                  <span>QR #{{ forloop.index }}</span>
+                  <div class="od__redeem-product-name">
+                    {% assign product_name_only = matched_item.title | split: ' - ' | first %}
+                    {% assign product_name = matched_item.product.title %}
+                    {% assign variant_name = matched_item.title | remove: product_name | strip %}
+                    {% assign variant_parts = variant_name | split: ' / ' %}
+                    {% assign formatted_variant = variant_parts | join: ', ' | strip | remove_first: '-' | strip %}
+                    <h2>{{ product_name_only }}</h2>
+                    <h2>{{ formatted_variant }}</h2>
                   </div>
+                </div>
+                <img class="od__redeem-icon" src="{{ 'icon-arrow-back.svg' | asset_url }}" alt="Icon">
+              </div>
 
-                  <section class="od__redeem-info">
-                    <div class="od__redeem-info-wrapper">
-                      <img
-                        src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ code.qrcode | url_encode }}"
-                        width="75"
-                        height="75"
-                        style="cursor:pointer;"
-                      >
-                      <div class="od__redeem-data-wrapper">
-                        {% assign fields = 'iccid,smdp,activationcode,qrcode' | split: ',' %}
-                        {% for field in fields %}
-                          <div class="od__redeem-data">
-                            <div>
-                              <p>{{ field | upcase }}:</p>
-                              <h2 id="{{ field }}-{{ forloop.parentloop.index }}-{{ forloop.index }}">
-                                {{ code[field] }}
-                              </h2>
-                            </div>
-                            <button
-                              class="copy-button"
-                              onclick="copyText('{{ field }}-{{ forloop.parentloop.index }}-{{ forloop.index }}')"
-                            >
-                              <img class="copy-button-icon" src="{{ 'icon-copy.svg' | asset_url }}" alt="Copy Icon">
-                              <p>Copy</p>
-                            </button>
-                          </div>
-                        {% endfor %}
+              <section class="od__redeem-info">
+                <div class="od__redeem-info-wrapper">
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ data.qrcode | url_encode }}" width="75" height="75" style="cursor:pointer;">
+                  <div class="od__redeem-data-wrapper">
+                    {% assign fields = "iccid,smdp,activationcode,qrcode" | split: "," %}
+                    {% for field in fields %}
+                    <div class="od__redeem-data">
+                      <div>
+                        <p>{{ field | upcase }}:</p>
+                        <h2 id="{{ field }}-{{ forloop.parentloop.index }}">{{ data[field] }}</h2>
                       </div>
+                      <button class="copy-button" onclick="copyText('{{ field }}-{{ forloop.parentloop.index }}')">
+                        <img class="copy-button-icon" src="{{ 'icon-copy.svg' | asset_url }}" alt="Copy Icon">
+                        <p>Copy</p>
+                      </button>
                     </div>
-                  </section>
+                    {% endfor %}
+                  </div>
                 </div>
               </section>
-            {% endfor %}
-          {% else %}
-            <p>For complete details, kindly check your email.</p>
+            </div>
+          </section>
           {% endif %}
         {% endfor %}
       </div>
@@ -229,56 +141,57 @@
   </section>
 </div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const orderIdParam = new URLSearchParams(window.location.search).get('order_id');
-    if (orderIdParam) {
-      document.querySelectorAll('.od__order-block').forEach((block) => {
-        if (block.getAttribute('data-order-id') !== orderIdParam) block.remove();
-      });
-    }
 
-    const first = document.querySelector('.od__redeem-wrapper');
-    if (first) {
-      const details = first.nextElementSibling;
-      const icon = first.querySelector('.od__redeem-icon');
-      details.style.display = 'block';
-      if (icon) icon.style.transform = 'rotate(90deg)';
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const orderIdParam = new URLSearchParams(window.location.search).get('order_id');
+  if (orderIdParam) {
+    document.querySelectorAll('.od__order-block').forEach(block => {
+      if (block.getAttribute('data-order-id') !== orderIdParam) block.remove();
+    });
+  }
+
+  const first = document.querySelector('.od__redeem-wrapper');
+  if (first) {
+    const details = first.nextElementSibling;
+    const icon = first.querySelector('.od__redeem-icon');
+    details.style.display = "block";
+    if (icon) icon.style.transform = "rotate(90deg)";
+  }
+});
+
+function toggleDetails(el) {
+  document.querySelectorAll('.od__redeem-info').forEach(d => {
+    if (d !== el.nextElementSibling) {
+      d.style.display = "none";
+      let ic = d.previousElementSibling.querySelector('.od__redeem-icon');
+      if (ic) ic.style.transform = "rotate(0deg)";
     }
   });
 
-  function toggleDetails(el) {
-    document.querySelectorAll('.od__redeem-info').forEach((d) => {
-      if (d !== el.nextElementSibling) {
-        d.style.display = 'none';
-        let ic = d.previousElementSibling.querySelector('.od__redeem-icon');
-        if (ic) ic.style.transform = 'rotate(0deg)';
-      }
-    });
+  const details = el.nextElementSibling;
+  const icon = el.querySelector('.od__redeem-icon');
+  const visible = details.style.display === "block";
+  details.style.display = visible ? "none" : "block";
+  if (icon) icon.style.transform = visible ? "rotate(0deg)" : "rotate(90deg)";
+}
 
-    const details = el.nextElementSibling;
-    const icon = el.querySelector('.od__redeem-icon');
-    const visible = details.style.display === 'block';
-    details.style.display = visible ? 'none' : 'block';
-    if (icon) icon.style.transform = visible ? 'rotate(0deg)' : 'rotate(90deg)';
-  }
-
-  function copyText(id) {
-    const text = document.getElementById(id).innerText;
-    navigator.clipboard.writeText(text).then(() => {
-      document.querySelectorAll('.copy-button').forEach((btn) => {
-        btn.classList.remove('copied');
-        btn.querySelector('p').innerText = 'Copy';
-        btn.querySelector('p').style.color = '';
-      });
-      const btn = document.querySelector(`[onclick="copyText('${id}')"]`);
-      if (btn) {
-        btn.querySelector('p').innerText = 'Copied';
-        btn.querySelector('p').style.color = 'var(--color-secondary)';
-        btn.classList.add('copied');
-      }
+function copyText(id) {
+  const text = document.getElementById(id).innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    document.querySelectorAll(".copy-button").forEach(btn => {
+      btn.classList.remove("copied");
+      btn.querySelector("p").innerText = "Copy";
+      btn.querySelector("p").style.color = "";
     });
-  }
+    const btn = document.querySelector(`[onclick="copyText('${id}')"]`);
+    if (btn) {
+      btn.querySelector("p").innerText = "Copied";
+      btn.querySelector("p").style.color = "var(--color-secondary)";
+      btn.classList.add("copied");
+    }
+  });
+}
 </script>
 
 {% schema %}
