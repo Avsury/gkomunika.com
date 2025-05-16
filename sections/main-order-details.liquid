@@ -59,9 +59,14 @@
 .copy-button.copied p { color: var(--color-primary); }
 .copy-button-icon { color: var(--color-primary); }
 
+
 @media (max-width: 425px) {
   .od__wrapper { padding: 20px 24px; }
   .od__redeem-info-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+}
     display: flex;
     flex-direction: column;
   }
@@ -77,6 +82,7 @@
 
       <div class="od__order-block" data-order-id="{{ order.id }}">
         <h2 class="od__order-title">eSIM Details</h2>
+        <h3 class="od__order-description">QR SENT TO: <span style="color: var(--color-secondary);">{{ order.email }}</span></h3>
         <h3 class="od__order-description">QR SENT TO: <span style="color: var(--color-secondary);">{{ order.email }}</span></h3>
 
         {% assign activation_codes = order.metafields.sim_card.details.value.activation_code %}
@@ -142,6 +148,7 @@
   </section>
 </div>
 
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const orderIdParam = new URLSearchParams(window.location.search).get('order_id');
@@ -150,7 +157,22 @@ document.addEventListener("DOMContentLoaded", function () {
       if (block.getAttribute('data-order-id') !== orderIdParam) block.remove();
     });
   }
+document.addEventListener("DOMContentLoaded", function () {
+  const orderIdParam = new URLSearchParams(window.location.search).get('order_id');
+  if (orderIdParam) {
+    document.querySelectorAll('.od__order-block').forEach(block => {
+      if (block.getAttribute('data-order-id') !== orderIdParam) block.remove();
+    });
+  }
 
+  const first = document.querySelector('.od__redeem-wrapper');
+  if (first) {
+    const details = first.nextElementSibling;
+    const icon = first.querySelector('.od__redeem-icon');
+    details.style.display = "block";
+    if (icon) icon.style.transform = "rotate(90deg)";
+  }
+});
   const first = document.querySelector('.od__redeem-wrapper');
   if (first) {
     const details = first.nextElementSibling;
@@ -168,6 +190,14 @@ function toggleDetails(el) {
       if (ic) ic.style.transform = "rotate(0deg)";
     }
   });
+function toggleDetails(el) {
+  document.querySelectorAll('.od__redeem-info').forEach(d => {
+    if (d !== el.nextElementSibling) {
+      d.style.display = "none";
+      let ic = d.previousElementSibling.querySelector('.od__redeem-icon');
+      if (ic) ic.style.transform = "rotate(0deg)";
+    }
+  });
 
   const details = el.nextElementSibling;
   const icon = el.querySelector('.od__redeem-icon');
@@ -175,7 +205,29 @@ function toggleDetails(el) {
   details.style.display = visible ? "none" : "block";
   if (icon) icon.style.transform = visible ? "rotate(0deg)" : "rotate(90deg)";
 }
+  const details = el.nextElementSibling;
+  const icon = el.querySelector('.od__redeem-icon');
+  const visible = details.style.display === "block";
+  details.style.display = visible ? "none" : "block";
+  if (icon) icon.style.transform = visible ? "rotate(0deg)" : "rotate(90deg)";
+}
 
+function copyText(id) {
+  const text = document.getElementById(id).innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    document.querySelectorAll(".copy-button").forEach(btn => {
+      btn.classList.remove("copied");
+      btn.querySelector("p").innerText = "Copy";
+      btn.querySelector("p").style.color = "";
+    });
+    const btn = document.querySelector(`[onclick="copyText('${id}')"]`);
+    if (btn) {
+      btn.querySelector("p").innerText = "Copied";
+      btn.querySelector("p").style.color = "var(--color-secondary)";
+      btn.classList.add("copied");
+    }
+  });
+}
 function copyText(id) {
   const text = document.getElementById(id).innerText;
   navigator.clipboard.writeText(text).then(() => {
