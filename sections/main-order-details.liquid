@@ -88,6 +88,9 @@
     overflow: hidden;
     transition: max-height 0.8s ease-out, opacity 0.5s ease-out, transform 0.5s ease-out;
   }
+@media (max-width: 425px) {
+  .od__wrapper { padding: 20px 24px; }
+
   .od__redeem-info-wrapper {
     display: flex;
     gap: 10px;
@@ -160,6 +163,7 @@
 
         {% assign activation_codes = order.metafields.sim_card.details.value.activation_code %}
 
+
         {% for item in order.line_items %}
           {% assign matching_codes = activation_codes | where: 'sku', item.sku %}
 
@@ -220,6 +224,60 @@
             <p>For complete details, kindly check your email.</p>
           {% endif %}
         {% endfor %}
+
+        {% assign activation_codes = order.metafields.sim_card.details.value.activation_code %}
+
+        {% for item in order.line_items %}
+  {% assign matching_codes = activation_codes | where: "sku", item.sku %}
+
+  {% if matching_codes.size > 0 %}
+    {% for code in matching_codes %}
+      <section class="od__redeem">
+        <div class="od__details-card">
+          <div class="od__redeem-wrapper" onclick="toggleDetails(this)">
+            <div class="od__redeem-index">
+              <span>QR #{{ forloop.index }}</span>
+              <div class="od__redeem-product-name">
+                {% assign product_name_only = item.title | split: ' - ' | first %}
+                {% assign product_name = item.product.title %}
+                {% assign variant_name = item.title | remove: product_name | strip %}
+                {% assign variant_parts = variant_name | split: ' / ' %}
+                {% assign formatted_variant = variant_parts | join: ', ' | strip | remove_first: '-' | strip %}
+                <h2>{{ product_name_only }}</h2>
+                <h2>{{ formatted_variant }}</h2>
+              </div>
+            </div>
+            <img class="od__redeem-icon" src="{{ 'icon-arrow-back.svg' | asset_url }}" alt="Icon">
+          </div>
+
+          <section class="od__redeem-info">
+            <div class="od__redeem-info-wrapper">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ code.qrcode | url_encode }}" width="75" height="75" style="cursor:pointer;">
+              <div class="od__redeem-data-wrapper">
+                {% assign fields = "iccid,smdp,activationcode,qrcode" | split: "," %}
+                {% for field in fields %}
+                <div class="od__redeem-data">
+                  <div>
+                    <p>{{ field | upcase }}:</p>
+                    <h2 id="{{ field }}-{{ forloop.parentloop.index }}-{{ forloop.index }}">{{ code[field] }}</h2>
+                  </div>
+                  <button class="copy-button" onclick="copyText('{{ field }}-{{ forloop.parentloop.index }}-{{ forloop.index }}')">
+                    <img class="copy-button-icon" src="{{ 'icon-copy.svg' | asset_url }}" alt="Copy Icon">
+                    <p>Copy</p>
+                  </button>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+    {% endfor %}
+  {% else %}
+    <p>For complete details, kindly check your email.</p>
+  {% endif %}
+{% endfor %}
+
       </div>
 
       <div class="od__order-block" data-order-id="{{ order.id }}">
