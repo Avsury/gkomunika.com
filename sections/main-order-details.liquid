@@ -69,31 +69,11 @@
 {% endstyle %}
 
 <div class="od__container">
-  <section class="od__wrapper">
-    {% for order in customer.orders %}
-      <div class="od__order-block" data-order-id="{{ order.id }}">
-        {% render 'order-history__details', order: order %}
-      </div>
-
-      <div class="od__order-block" data-order-id="{{ order.id }}">
-        <h2 class="od__order-title">eSIM Details</h2>
-        <h3 class="od__order-description">QR SENT TO: <span style="color: var(--color-secondary);">{{ order.email }}</span></h3>
-
-        {% assign activation_codes = order.metafields.sim_card.details.value.activation_code %}
-
-        {% for item in order.line_items %}
+ {% for item in order.line_items %}
   {% assign quantity = item.quantity %}
-  {% assign matched_data = null %}
-  
+
   {% for data in activation_codes %}
     {% if item.sku == data.sku %}
-      {% assign matched_data = data %}
-      {% break %}
-    {% endif %}
-  {% endfor %}
-
-  {% if matched_data %}
-    {% for i in (1..quantity) %}
       <section class="od__redeem">
         <div class="od__details-card">
           <div class="od__redeem-wrapper" onclick="toggleDetails(this)">
@@ -114,14 +94,14 @@
 
           <section class="od__redeem-info">
             <div class="od__redeem-info-wrapper">
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ matched_data.qrcode | url_encode }}" width="75" height="75" style="cursor:pointer;">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ data.qrcode | url_encode }}" width="75" height="75" style="cursor:pointer;">
               <div class="od__redeem-data-wrapper">
                 {% assign fields = "iccid,smdp,activationcode,qrcode" | split: "," %}
                 {% for field in fields %}
                 <div class="od__redeem-data">
                   <div>
                     <p>{{ field | upcase }}:</p>
-                    <h2 id="{{ field }}-{{ forloop.parentloop.index }}-{{ forloop.index }}">{{ matched_data[field] }}</h2>
+                    <h2 id="{{ field }}-{{ forloop.parentloop.index }}-{{ forloop.index }}">{{ data[field] }}</h2>
                   </div>
                   <button class="copy-button" onclick="copyText('{{ field }}-{{ forloop.parentloop.index }}-{{ forloop.index }}')">
                     <img class="copy-button-icon" src="{{ 'icon-copy.svg' | asset_url }}" alt="Copy Icon">
@@ -134,19 +114,10 @@
           </section>
         </div>
       </section>
-    {% endfor %}
-  {% else %}
-    <p>For complete details, kindly check your email.</p>
-  {% endif %}
+    {% endif %}
+  {% endfor %}
 {% endfor %}
 
-      </div>
-
-      <div class="od__order-block" data-order-id="{{ order.id }}">
-        {% render 'order-summary', order: order %}
-      </div>
-    {% endfor %}
-  </section>
 </div>
 
 <script>
