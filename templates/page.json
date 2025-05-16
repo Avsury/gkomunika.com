@@ -11,13 +11,20 @@
   "sections": {
     "main": {
       "type": "main-page",
+      "disabled": true,
       "settings": {
         "padding_top": 28,
         "padding_bottom": 28
       }
+    },
+    "page_order_details_NipiV3": {
+      "type": "page-order-details",
+      "name": "Section Order Details",
+      "settings": {}
     }
   },
   "order": [
-    "main"
+    "main",
+    "page_order_details_NipiV3"
   ]
 }
