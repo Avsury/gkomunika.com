@@ -59,7 +59,6 @@
 .copy-button.copied p { color: var(--color-primary); }
 .copy-button-icon { color: var(--color-primary); }
 
-
 @media (max-width: 425px) {
   .od__wrapper { padding: 20px 24px; }
   .od__redeem-info-wrapper {
@@ -80,26 +79,12 @@
         <h2 class="od__order-title">eSIM Details</h2>
         <h3 class="od__order-description">QR SENT TO: <span style="color: var(--color-secondary);">{{ order.email }}</span></h3>
 
-        {% assign expanded_items = "" %}
-        {% for item in order.line_items %}
-          {% for i in (1..item.quantity) %}
-            {% assign expanded_items = expanded_items | append: item.sku | append: "||" %}
-          {% endfor %}
-        {% endfor %}
-        {% assign item_list = expanded_items | split: "||" %}
+        {% assign activation_codes = order.metafields.sim_card.details.value.activation_code %}
 
-        {% for sku in item_list %}
-          {% assign matched_code = null %}
-          {% for data in order.metafields.sim_card.details.value.activation_code %}
-            {% if data.sku == sku %}
-              {% assign matched_code = data %}
-              {% break %}
-            {% endif %}
-          {% endfor %}
-
+        {% for data in activation_codes %}
           {% assign matched_item = null %}
           {% for item in order.line_items %}
-            {% if item.sku == sku %}
+            {% if item.sku == data.sku %}
               {% assign matched_item = item %}
               {% break %}
             {% endif %}
@@ -123,32 +108,26 @@
                 <img class="od__redeem-icon" src="{{ 'icon-arrow-back.svg' | asset_url }}" alt="Icon">
               </div>
 
-              {% if matched_code %}
-                <section class="od__redeem-info">
-                  <div class="od__redeem-info-wrapper">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ matched_code.qrcode | url_encode }}" width="75" height="75" style="cursor:pointer;">
-                    <div class="od__redeem-data-wrapper">
-                      {% assign fields = "iccid,smdp,activationcode,qrcode" | split: "," %}
-                      {% for field in fields %}
-                      <div class="od__redeem-data">
-                        <div>
-                          <p>{{ field | upcase }}:</p>
-                          <h2 id="{{ field }}-{{ forloop.parentloop.index }}">{{ matched_code[field] }}</h2>
-                        </div>
-                        <button class="copy-button" onclick="copyText('{{ field }}-{{ forloop.parentloop.index }}')">
-                          <img class="copy-button-icon" src="{{ 'icon-copy.svg' | asset_url }}" alt="Copy Icon">
-                          <p>Copy</p>
-                        </button>
+              <section class="od__redeem-info">
+                <div class="od__redeem-info-wrapper">
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ data.qrcode | url_encode }}" width="75" height="75" style="cursor:pointer;">
+                  <div class="od__redeem-data-wrapper">
+                    {% assign fields = "iccid,smdp,activationcode,qrcode" | split: "," %}
+                    {% for field in fields %}
+                    <div class="od__redeem-data">
+                      <div>
+                        <p>{{ field | upcase }}:</p>
+                        <h2 id="{{ field }}-{{ forloop.parentloop.index }}">{{ data[field] }}</h2>
                       </div>
-                      {% endfor %}
+                      <button class="copy-button" onclick="copyText('{{ field }}-{{ forloop.parentloop.index }}')">
+                        <img class="copy-button-icon" src="{{ 'icon-copy.svg' | asset_url }}" alt="Copy Icon">
+                        <p>Copy</p>
+                      </button>
                     </div>
+                    {% endfor %}
                   </div>
-                </section>
-              {% else %}
-                <div class="od__redeem-info">
-                  <h2 style="color: var(--color-primary); font-weight: normal;">For complete details, kindly check your email.</h2>
                 </div>
-              {% endif %}
+              </section>
             </div>
           </section>
         {% endfor %}
