@@ -82,18 +82,10 @@
         {% assign activation_codes = order.metafields.sim_card.details.value.activation_code %}
 
         {% for item in order.line_items %}
-  {% assign quantity = item.quantity %}
-  {% assign matched_data = null %}
-  
-  {% for data in activation_codes %}
-    {% if item.sku == data.sku %}
-      {% assign matched_data = data %}
-      {% break %}
-    {% endif %}
-  {% endfor %}
+  {% assign matching_codes = activation_codes | where: "sku", item.sku %}
 
-  {% if matched_data %}
-    {% for i in (1..quantity) %}
+  {% if matching_codes.size > 0 %}
+    {% for code in matching_codes %}
       <section class="od__redeem">
         <div class="od__details-card">
           <div class="od__redeem-wrapper" onclick="toggleDetails(this)">
@@ -114,14 +106,14 @@
 
           <section class="od__redeem-info">
             <div class="od__redeem-info-wrapper">
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ matched_data.qrcode | url_encode }}" width="75" height="75" style="cursor:pointer;">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ code.qrcode | url_encode }}" width="75" height="75" style="cursor:pointer;">
               <div class="od__redeem-data-wrapper">
                 {% assign fields = "iccid,smdp,activationcode,qrcode" | split: "," %}
                 {% for field in fields %}
                 <div class="od__redeem-data">
                   <div>
                     <p>{{ field | upcase }}:</p>
-                    <h2 id="{{ field }}-{{ forloop.parentloop.index }}-{{ forloop.index }}">{{ matched_data[field] }}</h2>
+                    <h2 id="{{ field }}-{{ forloop.parentloop.index }}-{{ forloop.index }}">{{ code[field] }}</h2>
                   </div>
                   <button class="copy-button" onclick="copyText('{{ field }}-{{ forloop.parentloop.index }}-{{ forloop.index }}')">
                     <img class="copy-button-icon" src="{{ 'icon-copy.svg' | asset_url }}" alt="Copy Icon">
@@ -139,6 +131,7 @@
     <p>For complete details, kindly check your email.</p>
   {% endif %}
 {% endfor %}
+
 
       </div>
 
