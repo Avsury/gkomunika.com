@@ -11,13 +11,20 @@
   "sections": {
     "main": {
       "type": "main-page",
+      "disabled": true,
       "settings": {
         "padding_top": 28,
         "padding_bottom": 28
       }
+    },
+    "main_order_details_99UhyF": {
+      "type": "main-order-details",
+      "name": "Main Orde",
+      "settings": {}
     }
   },
   "order": [
-    "main"
+    "main",
+    "main_order_details_99UhyF"
   ]
 }

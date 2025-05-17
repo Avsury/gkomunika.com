@@ -403,6 +403,36 @@
         "name": "single_line_text_field",
         "category": "TEXT"
       }
+    },
+    {
+      "key": "insurance_plan",
+      "namespace": "custom",
+      "name": "Insurance Plan",
+      "description": "plan asuransi Zurich",
+      "type": {
+        "name": "list.single_line_text_field",
+        "category": "TEXT"
+      }
+    },
+    {
+      "key": "age",
+      "namespace": "custom",
+      "name": "Age",
+      "description": "",
+      "type": {
+        "name": "list.single_line_text_field",
+        "category": "TEXT"
+      }
+    },
+    {
+      "key": "duration_of_travel",
+      "namespace": "custom",
+      "name": "Duration of Travel",
+      "description": "",
+      "type": {
+        "name": "date",
+        "category": "DATE_TIME"
+      }
     }
   ],
   "shop": []
