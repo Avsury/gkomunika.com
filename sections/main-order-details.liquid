@@ -186,7 +186,7 @@
               <div class="od__redeem-wrapper" onclick="toggleDetails(this)">
                 <div class="od__redeem-index">
                   <span>QR #{{ i }}</span>
-                  {% if matched_item %}
+                  <!-- {% if matched_item %} -->
                     <div class="od__redeem-product-name">
                       {% assign product_name_only = matched_item.title | split: ' - ' | first %}
                       {% assign product_name = matched_item.product.title %}
@@ -201,7 +201,7 @@
                       <p>Product ID: {{ matched_item.product_id }}</p>
                       <p>Variant ID: {{ matched_item.variant_id }}</p>
                     </div>
-                  {% endif %}
+                  <!-- {% endif %} -->
 
                 </div>
                 <img
